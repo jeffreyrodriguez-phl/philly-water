@@ -33,4 +33,15 @@
 - requested_datetime range: 2025-01-01 00:00:34+00 to 2025-12-31 23:51:10+00. Times are in UTC (+00), not local time.
 - Counts by month: lowest Feb (35,881), highest Jul (52,630). No month missing data.
 - API count for 2025 on requested_datetime: 518,841, exact match with the table. The ~550k I remembered was wrong.
-	- Saved the count request in Bruno as "311 count – 2025".
+	- Saved the count request in Bruno as "311 count - 2025".
+- Checked max length of every column on the full table: address is 254. Answers the 254 question. That's what broke the wizard (address > 50).
+	- status_notes max is 36, not 254 like I noted on 11-02. Only 3,399 rows have a value, 4 distinct values.
+- subject and gdb_geomattr_data are NULL in every row.
+	- Plan: drop both in the clean table.
+- All 4 datetime columns max out at 22 characters. Format looks consistent.
+- Checked longest addresses, mostly junk:
+	- 3 rows with a 311 "requires a valid physical address" message
+	- Message telling people to report open/leaking hydrants to the Water Department directly (215-685-6300)
+	- File attachment URL
+	- Descriptive locations, e.g. "under 95 between Berks Street and Montgomery Ave"
+- **To-Do: count rows missing lat/lon**
