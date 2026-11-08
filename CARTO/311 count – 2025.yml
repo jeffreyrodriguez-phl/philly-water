@@ -1,0 +1,20 @@
+info:
+  name: 311 count – 2025
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: https://phl.carto.com/api/v2/sql?q=SELECT COUNT(*) from public_cases_fc WHERE requested_datetime between '2025-01-01T00:00:0Z' and '2025-12-31T23:59:59Z'
+  params:
+    - name: q
+      value: SELECT COUNT(*) from public_cases_fc WHERE requested_datetime between '2025-01-01T00:00:0Z' and '2025-12-31T23:59:59Z'
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

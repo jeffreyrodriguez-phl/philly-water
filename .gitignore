@@ -1,0 +1,5 @@
+# Data files from OpenPhilly
+*.csv
+
+# Obsidian app settings
+.obsidian/
