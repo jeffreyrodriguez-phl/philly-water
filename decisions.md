@@ -19,11 +19,11 @@
 - Table raw_311_2025 added into PostgreSQL, checked max lengths (status_notes 35, address 50, media_url 84). None hit 254 characters.
 - address max is 50, same as the old column limit. Some rows may have been dropped ruing import.
 - Several columns have NULLs ex status_notes, service_note and more. 
-	- **To-Do cleaning for later - count NULLs per column**
+	- **To-Do cleaning for later - count NULLs per column** (done 11-07)
 - Counts by service_name are far below API's 2025 count (36204 vs 285476 for information request services)
 - Checked min/max requested_datetimes and see that import failed partway through, only first 7 weeks (1/1/2025 -- 2/25/2025) were includedd.
 - Plan: Drop the partial table, create raw_311_2025 with all text columns, reload full CSV via psql. Confirm row and date range.
-- *Question: Which column had the 254-character values?*
+- *Question: Which column had the 254-character values?* Answered 11-07: address
 - *Question*: Which agencies handle water complains? Query agency_responsible by service_type (so far have seen: "Broken Main Drain/Raw Sewage within Property" under Maintenance Complaint goes to License & Inspections.)
 
 ## 2026-11-07
@@ -35,7 +35,7 @@
 - API count for 2025 on requested_datetime: 518,841, exact match with the table. The ~550k I remembered was wrong.
 	- Saved the count request in Bruno as "311 count - 2025".
 - Checked max length of every column on the full table: address is 254. Answers the 254 question. That's what broke the wizard (address > 50).
-	- status_notes max is 36, not 254 like I noted on 11-02. Only 3,399 rows have a value, 4 distinct values.
+	- status_notes max is 36, not 254 like I noted on 11-02. 
 - subject and gdb_geomattr_data are NULL in every row.
 	- Plan: drop both in the clean table.
 - All 4 datetime columns max out at 22 characters. Format looks consistent.
@@ -44,4 +44,10 @@
 	- Message telling people to report open/leaking hydrants to the Water Department directly (215-685-6300)
 	- File attachment URL
 	- Descriptive locations, e.g. "under 95 between Berks Street and Montgomery Ave"
-- **To-Do: count rows missing lat/lon**
+- Counted NULLs per column (count(*) - count(column)). Made a bar chart in LibreOffice.
+	- No NULLs: status, service_name, agency_responsible, requested_datetime, updated_datetime. service_type has 21.
+	- About half NULL: address (272,000), zipcode (277,255), lat/lon (273,033 each), service_notice (287,332), expected_datetime (294,352).
+	- status_notes 206,523, closed_datetime 32,159, service_code 69,162.
+	- media_url 466,147. subject and gdb_geomattr_data NULL in every row.
+	- *Question*: Are the rows with no address/lat/lon mostly information requests (~285k on 11-06)?
+		- Yes. Only 1,291 rows with no lat/lon are not Information Requests, and 948 of those also have no address.

@@ -26,3 +26,36 @@ select max(length(objectid))           as objectid,
        max(length(gdb_geomattr_data))  as gdb_geomattr_data,
        max(length(service_type))       as service_type
 from raw_311_2025;
+
+--view longest addresses: some are canned 311 messages, not real addresses
+select address, length (address) as len from raw_311_2025 where address is not null order by len desc;
+
+--view addresses over 200 characters
+select address from raw_311_2025 where length(address) > 200;
+
+--count NULLs per column
+select count(*) - count(status)             as status,
+       count(*) - count(status_notes)       as status_notes,
+       count(*) - count(service_name)       as service_name,
+       count(*) - count(service_code)       as service_code,
+       count(*) - count(agency_responsible) as agency_responsible,
+       count(*) - count(service_notice)     as service_notice,
+       count(*) - count(requested_datetime) as requested_datetime,
+       count(*) - count(updated_datetime)   as updated_datetime,
+       count(*) - count(expected_datetime)  as expected_datetime,
+       count(*) - count(address)            as address,
+       count(*) - count(zipcode)            as zipcode,
+       count(*) - count(media_url)          as media_url,
+       count(*) - count(lat)                as lat,
+       count(*) - count(lon)                as lon,
+       count(*) - count(subject)            as subject,
+       count(*) - count(closed_datetime)    as closed_datetime,
+       count(*) - count(gdb_geomattr_data)  as gdb_geomattr_data,
+       count(*) - count(service_type)       as service_type
+from raw_311_2025;
+
+select count(*) from raw_311_2025 where lat is null and service_name != 'Information Request';
+--1291 non-Information Request services with no longitude/latitude
+
+select count(*) - count(address) from raw_311_2025 where lat is null and service_name != 'Information Request';
+--948 non-Information Request services with no address
